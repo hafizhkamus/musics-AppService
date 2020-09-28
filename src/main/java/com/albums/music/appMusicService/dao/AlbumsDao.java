@@ -3,7 +3,6 @@ package com.albums.music.appMusicService.dao;
 
 import com.albums.music.appMusicService.dataTables.DataTableRequest;
 import com.albums.music.appMusicService.entity.Albums;
-import com.albums.music.appMusicService.entity.Artis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -52,7 +51,7 @@ public class AlbumsDao {
             Albums albums = new Albums();
             albums.setIdAlbum(rs.getInt("idAlbum"));
             albums.setNamaAlbums(rs.getString("namaAlbums"));
-            albums.setIdlabel(rs.getInt("idLabel"));
+            albums.setIdLabel(rs.getInt("idLabel"));
             albums.setIdArtis(rs.getInt("idArtis"));
             albums.setKeterangan(rs.getString("keterangan"));
             albums.setNamaArtis(rs.getString("namaArtis"));
@@ -72,7 +71,7 @@ public class AlbumsDao {
             Albums albums = new Albums();
             albums.setIdAlbum(rs.getInt("idAlbum"));
             albums.setNamaAlbums(rs.getString("namaAlbums"));
-            albums.setIdlabel(rs.getInt("idLabel"));
+            albums.setIdLabel(rs.getInt("idLabel"));
             albums.setIdArtis(rs.getInt("idArtis"));
             albums.setKeterangan(rs.getString("keterangan"));
             albums.setNamaLabels(rs.getString("namaLabels"));
@@ -113,7 +112,7 @@ public class AlbumsDao {
     public Integer getBanyakAlbums(DataTableRequest req){
         String baseQuery = "select count(id_album) as banyak from albums";
         if(!req.getExtraParam().isEmpty()){
-            String namaAlbums = (String) req.getExtraParam().get("nama_albums");
+            String namaAlbums = (String) req.getExtraParam().get("namaAlbums");
             baseQuery = "select count(id_album) as banyak from albums where nama_albums like concat('%', ?, '%')";
             return jdbcTemplate.queryForObject(baseQuery, Integer.class, namaAlbums);
         } else {
@@ -123,15 +122,15 @@ public class AlbumsDao {
 
     public List<Albums> getAllAlbumsRec(DataTableRequest request){
         String baseQuery = "select al.id_album as idAlbum, al.nama_albums as namaAlbums, " +
-                "al.id_labels as idLabel, al.id_artis as idArtis, al.keterangan, ar.nama_artis as namaArtis from Albums al join Artis ar on " +
-                "al.id_artis = ar.id_artis " +
+                "al.id_labels as idLabel, al.id_artis as idArtis, al.keterangan, ar.nama_artis as namaArtis, la.nama_labels as namaLabels from Albums al join Artis ar on " +
+                "al.id_artis = ar.id_artis join lables_rekaman la on al.id_album = la.id_label " +
                 "order by "+(request.getSortCol()+1)+" "+request.getSortDir()+" limit ? offset ? ";
         if(!request.getExtraParam().isEmpty()){
-            String namaAlbums = (String) request.getExtraParam().get("nama_albums");
+            String namaAlbums = (String) request.getExtraParam().get("namaAlbums");
             baseQuery = "select al.id_album as idAlbum, al.nama_albums as namaAlbums, " +
-                    "al.id_labels as idLabel, al.id_artis as idArtis, al.keterangan, ar.nama_artis as namaArtis from Albums al join Artis ar on " +
-                    "al.id_artis = ar.id_artis where al.nama_albums like concat('%', ?, '%')" +
-                    "order by "+(request.getSortCol()+1)+" "+request.getSortDir()+" limit ? offset ? ";;
+                    "al.id_labels as idLabel, al.id_artis as idArtis, al.keterangan, ar.nama_artis as namaArtis, la.nama_labels as namaLabels from Albums al join Artis ar on " +
+                    "al.id_artis = ar.id_artis join lables_rekaman la on al.id_album = la.id_label where al.nama_albums like concat('%', ?, '%')" +
+                    "order by "+(request.getSortCol()+1)+" "+request.getSortDir()+" limit ? offset ? ";
             return jdbcTemplate.query(baseQuery, BeanPropertyRowMapper.newInstance(Albums.class),namaAlbums,
                     request.getLength(), request.getStart());
         } else {

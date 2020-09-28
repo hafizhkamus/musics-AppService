@@ -60,7 +60,7 @@ public class GenreController {
     }
 
     @PostMapping(path = "/datatable")
-    public ResponseEntity<DataTableResponse<Artis>> getDataProvinsi(@RequestBody DataTableRequest dataTableRequest){
+    public ResponseEntity<DataTableResponse<Genre>> getDataProvinsi(@RequestBody DataTableRequest dataTableRequest){
         return ResponseEntity.ok().body(service.datatables(dataTableRequest));
     }
 }

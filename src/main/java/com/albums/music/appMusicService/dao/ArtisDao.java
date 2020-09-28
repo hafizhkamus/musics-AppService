@@ -68,7 +68,7 @@ public class ArtisDao {
     public Integer getBanyakArtis(DataTableRequest req){
         String baseQuery = "select count(id_artis) as banyak from artis";
         if(!req.getExtraParam().isEmpty()){
-            String namaArtis = (String) req.getExtraParam().get("nama_artis");
+            String namaArtis = (String) req.getExtraParam().get("namaArtis");
             baseQuery = "select count(id_artis) as banyak from artis where nama_artis like concat('%', ?, '%')";
             return jdbcTemplate.queryForObject(baseQuery, Integer.class, namaArtis);
         } else {
@@ -80,7 +80,7 @@ public class ArtisDao {
         String baseQuery = "select id_artis as idArtis, nama_artis as namaArtis, url_website as url, keterangan from artis "
                 + "order by "+(request.getSortCol()+1)+" "+request.getSortDir()+" limit ? offset ? ";
         if(!request.getExtraParam().isEmpty()){
-            String namaArtis = (String) request.getExtraParam().get("nama_artis");
+            String namaArtis = (String) request.getExtraParam().get("namaArtis");
             baseQuery = "select id_artis as idArtis, nama_artis as namaArtis, url_website as url, keterangan from artis where nama_artis like concat('%', ?, '%') "
                     + "order by "+(request.getSortCol()+1)+" "+request.getSortDir()+" limit ? offset ? ";
             return jdbcTemplate.query(baseQuery, BeanPropertyRowMapper.newInstance(Artis.class),namaArtis,

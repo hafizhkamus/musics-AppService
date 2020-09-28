@@ -69,7 +69,7 @@ public class GenreDao {
     public Integer getBanyakGenre(DataTableRequest req){
         String baseQuery = "select count(id_genre) as banyak from genre";
         if(!req.getExtraParam().isEmpty()){
-            String namaGenre = (String) req.getExtraParam().get("nama_genre");
+            String namaGenre = (String) req.getExtraParam().get("namaGenre");
             baseQuery = "select count(id_genre) as banyak from genre where nama_genre like concat('%', ?, '%')";
             return jdbcTemplate.queryForObject(baseQuery, Integer.class, namaGenre);
         } else {
@@ -77,17 +77,17 @@ public class GenreDao {
         }
     }
 
-    public List<Artis> getAllGenreJson(DataTableRequest request){
+    public List<Genre> getAllGenreJson(DataTableRequest request){
         String baseQuery = "select id_genre as idGenre, nama_genre as namaGenre keterangan from genre "
                 + "order by "+(request.getSortCol()+1)+" "+request.getSortDir()+" limit ? offset ? ";
         if(!request.getExtraParam().isEmpty()){
-            String namaGenre = (String) request.getExtraParam().get("nama_genre");
+            String namaGenre = (String) request.getExtraParam().get("namaGenre");
             baseQuery = "select id_genre as idGenre, nama_genre as namaGenre from genre where nama_genre like concat('%', ?, '%') "
                     + "order by "+(request.getSortCol()+1)+" "+request.getSortDir()+" limit ? offset ? ";
-            return jdbcTemplate.query(baseQuery, BeanPropertyRowMapper.newInstance(Artis.class),namaGenre,
+            return jdbcTemplate.query(baseQuery, BeanPropertyRowMapper.newInstance(Genre.class),namaGenre,
                     request.getLength(), request.getStart());
         } else {
-            return jdbcTemplate.query(baseQuery, BeanPropertyRowMapper.newInstance(Artis.class),
+            return jdbcTemplate.query(baseQuery, BeanPropertyRowMapper.newInstance(Genre.class),
                     request.getLength(), request.getStart());
         }
 

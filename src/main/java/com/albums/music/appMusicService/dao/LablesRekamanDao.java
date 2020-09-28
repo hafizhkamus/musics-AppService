@@ -67,7 +67,7 @@ public class LablesRekamanDao {
     public Integer getBanyakLabel(DataTableRequest req){
         String baseQuery = "select count(id_label) as banyak from lables_rekaman";
         if(!req.getExtraParam().isEmpty()){
-            String namaLabels = (String) req.getExtraParam().get("nama_labels");
+            String namaLabels = (String) req.getExtraParam().get("namaLabels");
             baseQuery = "select count(id_label) as banyak from lables_rekaman where nama_labels like concat('%', ?, '%')";
             return jdbcTemplate.queryForObject(baseQuery, Integer.class, namaLabels);
         } else {
@@ -79,7 +79,7 @@ public class LablesRekamanDao {
         String baseQuery = "SELECT id_label as idLabel, nama_labels  as namaLabels, alamat, no_telp as noTelp, contact_person as contactPerson, url_website as url FROM lables_rekaman "
                 + "order by "+(request.getSortCol()+1)+" "+request.getSortDir()+" limit ? offset ? ";
         if(!request.getExtraParam().isEmpty()){
-            String namaLabels = (String) request.getExtraParam().get("nama_labels");
+            String namaLabels = (String) request.getExtraParam().get("namaLabels");
             baseQuery = "SELECT id_label as idLabel, nama_labels  as namaLabels, alamat, no_telp as noTelp, contact_person as contactPerson, url_website as url FROM lables_rekaman where nama_labels like concat('%', ?, '%') "
                     + "order by "+(request.getSortCol()+1)+" "+request.getSortDir()+" limit ? offset ? ";
             return jdbcTemplate.query(baseQuery, BeanPropertyRowMapper.newInstance(LablesRekaman.class),namaLabels,

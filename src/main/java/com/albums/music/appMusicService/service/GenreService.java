@@ -20,8 +20,8 @@ public class GenreService {
     @Autowired
     private GenreDao dao;
 
-    public DataTableResponse<Artis> datatables(DataTableRequest res){
-        DataTableResponse<Artis> tables = new DataTableResponse<>();
+    public DataTableResponse<Genre> datatables(DataTableRequest res){
+        DataTableResponse<Genre> tables = new DataTableResponse<>();
         tables.setData(dao.getAllGenreJson( res));
         Integer total = dao.getBanyakGenre( res);
         tables.setRecordsTotal(total);

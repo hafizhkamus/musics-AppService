@@ -12,11 +12,12 @@ public class Albums {
 
     private Integer idAlbum;
     private String namaAlbums;
-    private Integer idlabel;
+    private Integer idLabel;
     private Integer idArtis;
     private String fotoCover;
     private String keterangan;
     private String namaArtis;
     private String namaLabels;
+//    private LablesRekaman lablesRekaman;
 
 }
