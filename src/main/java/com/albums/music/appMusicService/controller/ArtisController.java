@@ -5,13 +5,16 @@ import com.albums.music.appMusicService.dataTables.DataTableResponse;
 import com.albums.music.appMusicService.entity.Artis;
 import com.albums.music.appMusicService.service.ArtisService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +54,7 @@ public class ArtisController {
     }
 
     @PostMapping(path = "/save")
-    public ResponseEntity<Map<String, Object>> saveProvinsiJson(@RequestBody Artis artis){
+    public ResponseEntity<Map<String, Object>> saveProvinsiJson(@RequestBody Artis artis) throws IOException {
         Map<String,Object> status = new HashMap<>();
         service.insertOrUpdate(artis);
         status.put("message", "OK");
@@ -70,10 +73,21 @@ public class ArtisController {
         try {
             String namaFile = service.saveFile(file);
             pesan.put("pesan", "uploaded the file successfully: " + namaFile);
+            pesan.put("file", namaFile);
             return ResponseEntity.ok().body(pesan);
         } catch (Exception exception) {
             pesan.put("pesan", "cannot input file");
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(pesan);
+        }
+    }
+
+    @GetMapping(value = "/image/{id}")
+    public ResponseEntity<InputStreamResource>getImage(@PathVariable("id") String id){
+        try{
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(
+                    new InputStreamResource( service.load(id).getInputStream() ));
+        }catch(IOException ex){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(null);
         }
     }
 

@@ -29,7 +29,7 @@ public class AlbumsDao {
         String baseQuery = "select al.id_album as idAlbum, al.nama_albums as namaAlbums," +
                 " al.id_labels as idLabel, al.id_artis as idArtis, al.keterangan, ar.nama_artis as namaArtis from Albums al join Artis ar on " +
                 "al.id_artis = ar.id_artis " +
-                "where al.id_albums = ?";
+                "where al.id_album = ?";
         Object param[] = {id};
         try {
             return Optional.of(jdbcTemplate.queryForObject(baseQuery, param, BeanPropertyRowMapper.newInstance(Albums.class)));
