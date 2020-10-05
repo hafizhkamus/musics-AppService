@@ -9,15 +9,9 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping(path = "/api/auth")
@@ -39,6 +33,9 @@ public class AuthController {
                     String token = UUID.randomUUID().toString();
                     statusLogin.setIsValid(true);
                     statusLogin.setToken(token);
+                    Integer a = useradmindb.get().getGroupId();
+                    List<String> roles = dao.getRolesById(a);
+                    statusLogin.setRole(roles);
                     Map<String, Object> paramlogin = new HashMap<>();
                     paramlogin.put("username", username);
                     paramlogin.put("token", token);
@@ -58,6 +55,11 @@ public class AuthController {
     @PostMapping(path = "/checking")
     public ResponseEntity<StatusLogin> cekLoginValid(UserAdmin user){
         return ResponseEntity.ok().body(dao.cekLoginValid(user));
+    }
+
+    @GetMapping(path = "/getRole/{id}")
+    public ResponseEntity<List<String>> getRoleById(@PathVariable Integer id){
+        return ResponseEntity.ok().body(dao.getRolesById(id));
     }
 
 
