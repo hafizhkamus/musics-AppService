@@ -1,9 +1,11 @@
 package com.albums.music.appMusicService.dao;
 
 
+import com.albums.music.appMusicService.dto.AkunAdminDto;
 import com.albums.music.appMusicService.dto.UserAdminDto;
 import com.albums.music.appMusicService.entity.AkunAdmin;
 import com.albums.music.appMusicService.entity.Lagu;
+import com.albums.music.appMusicService.entity.StatusLogin;
 import com.albums.music.appMusicService.entity.UserAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -21,9 +23,10 @@ public class UserAdminDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<UserAdmin> getAllUser(){
-        String baseQuery= " select user_name as userName, user_password as userPassword from user_admin";
-        return jdbcTemplate.query(baseQuery, BeanPropertyRowMapper.newInstance(UserAdmin.class));
+    public List<AkunAdminDto.Information> getAllUser(){
+        String baseQuery= "select username , keyword, group_id as groupId from akun_admin a join  roles r join (a.group_id = r.role_id) " +
+                "where a.username like concat('%', ?, '%')";
+        return jdbcTemplate.query(baseQuery, BeanPropertyRowMapper.newInstance(AkunAdminDto.Information.class));
     }
 
     public List<UserAdminDto.Username> getUserName(){
@@ -51,26 +54,35 @@ public class UserAdminDao {
         }
     }
 
-    public boolean cekLoginValid(UserAdmin user){
-        String baseQuery = "select user_name from user_admin where tokenkey = ?";
-
+    public StatusLogin cekLoginValid(UserAdmin user){
+        String baseQuery = "select u.user_name, a.group_id from user_admin u join akun_admin a on (u.user_name = a.username) where tokenkey = ?";
+        StatusLogin state = new StatusLogin();
         try{
+            boolean isValid = false;
             Optional<UserAdmin> hasil = Optional.of(jdbcTemplate.queryForObject(baseQuery, (rs, rownum) ->{
                 UserAdmin use = new UserAdmin();
                 use.setUserName(rs.getString("user_name"));
+                use.setGroupId(rs.getString("group_id"));
                 return use;
             },user.getTokenKey()));
                 if (hasil.isPresent()){
                     if (Objects.equals(user.getUserName(), hasil.get().getTokenKey())){
-                        return true;
+                         String query = "select role_name from roles where role_id = ?";
+                        List<String> roleName = jdbcTemplate.query(baseQuery, (rs, rownum) ->{
+                            return rs.getString("role_name");
+                        }, hasil.get().getGroupId());
+                        state.setIsValid(true);
+                        state.setRole(roleName);
+                        state.setToken(user.getTokenKey());
                     } else{
-                        return false;
+                        state.setIsValid(false);
                     }
                 }
             }catch (Exception e){
             e.printStackTrace();
+            state.setIsValid(false);
         }
-        return false;
+        return state;
     }
 
     public void insertUserLogin(Map<String, Object>param){

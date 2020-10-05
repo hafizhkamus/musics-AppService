@@ -56,7 +56,7 @@ public class AuthController {
     }
 
     @PostMapping(path = "/checking")
-    public ResponseEntity<Boolean> cekLogin(@RequestBody UserAdmin user){
+    public ResponseEntity<StatusLogin> cekLoginValid(UserAdmin user){
         return ResponseEntity.ok().body(dao.cekLoginValid(user));
     }
 

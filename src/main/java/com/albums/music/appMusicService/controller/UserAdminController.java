@@ -20,10 +20,10 @@ public class UserAdminController {
     @Autowired
     private UserAdminDao dao;
 
-    @GetMapping(path = "/list")
-    public ResponseEntity<List<UserAdmin>> findAll(){
-        return ResponseEntity.ok().body(dao.getAllUser());
-    }
+//    @GetMapping(path = "/list")
+//    public ResponseEntity<List<UserAdmin>> findAll(){
+//        return ResponseEntity.ok().body(dao.getAllUser());
+//    }
 
     @GetMapping(path = "/username")
     public ResponseEntity<List<UserAdminDto.Username>> findUserName(){

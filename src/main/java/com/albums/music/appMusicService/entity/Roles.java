@@ -8,10 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AkunAdmin {
+public class Roles {
 
-    private String username;
-    private String keyword;
-    private Integer groupId;
+    private Integer roleId;
     private String roleName;
+
 }
