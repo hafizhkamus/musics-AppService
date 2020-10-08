@@ -20,7 +20,7 @@ public class RegisterController {
     @Autowired
     private AkunAdminService service;
 
-    @PostMapping
+    @PostMapping(path = "/saveAdmin")
     public ResponseEntity<?> saveAdmin(@RequestBody AkunAdminDto.New newAkun){
         try{
             service.saveAdmin(newAkun);
@@ -31,7 +31,7 @@ public class RegisterController {
         }
     }
 
-    @PostMapping
+    @PostMapping(path = "/saveUser")
     public ResponseEntity<?> saveUser(@RequestBody AkunAdminDto.New newAkun){
         try{
             service.saveUser(newAkun);
