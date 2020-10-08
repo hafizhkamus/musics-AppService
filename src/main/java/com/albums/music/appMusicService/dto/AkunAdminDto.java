@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 public class AkunAdminDto {
 
     @Data
@@ -23,5 +25,6 @@ public class AkunAdminDto {
         private String username;
         private String keyword;
         private Integer groupId;
+        private Timestamp tglRegister;
     }
 }

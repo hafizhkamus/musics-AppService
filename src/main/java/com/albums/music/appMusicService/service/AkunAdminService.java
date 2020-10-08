@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Service
 public class AkunAdminService {
@@ -15,11 +17,13 @@ public class AkunAdminService {
     private AkunAdminDao dao;
 
     public int saveAdmin(AkunAdminDto.New newAkun) throws SQLException{
+        newAkun.setTglRegister(Timestamp.valueOf(LocalDateTime.now()));
         newAkun.setGroupId(1);
         return dao.save(newAkun);
     }
 
     public int saveUser(AkunAdminDto.New newAkun) throws SQLException{
+        newAkun.setTglRegister(Timestamp.valueOf(LocalDateTime.now()));
         newAkun.setGroupId(2);
         return dao.save(newAkun);
     }
