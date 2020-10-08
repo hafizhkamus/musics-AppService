@@ -64,7 +64,7 @@ public class UserAdminDao {
         return prop;
     }
 
-    public StatusLogin cekLoginValid(UserAdmin user){
+    public boolean cekLoginValid(UserAdmin user){
         String baseQuery = "select u.user_name, a.group_id from user_admin u join akun_admin a on (u.user_name = a.username) where tokenkey = ?";
         StatusLogin state = new StatusLogin();
         try{
@@ -75,21 +75,24 @@ public class UserAdminDao {
                 use.setGroupId(rs.getInt("group_id"));
                 return use;
             },user.getTokenKey()));
-                if (hasil.isPresent()){
-                    if (Objects.equals(user.getUserName(), hasil.get().getTokenKey())){
-                        List<String> roleName = getRolesById(hasil.get().getGroupId());
+            if (hasil.isPresent()){
+                if (Objects.equals(user.getUserName(), hasil.get().getTokenKey())){
+                    List<String> roleName = getRolesById(hasil.get().getGroupId());
+                    if (roleName != null){
                         state.setIsValid(true);
                         state.setRole(roleName);
                         state.setToken(user.getTokenKey());
-                    } else{
-                        state.setIsValid(false);
+                        return state.getIsValid();
                     }
+                } else{
+                    state.setIsValid(false);
                 }
-            }catch (Exception e){
+            }
+        }catch (Exception e){
             e.printStackTrace();
             state.setIsValid(false);
         }
-        return state;
+        return state.getIsValid();
     }
 
     public void insertUserLogin(Map<String, Object>param){

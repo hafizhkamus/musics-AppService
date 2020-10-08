@@ -15,4 +15,13 @@ public class AkunAdminDto {
         private Integer groupId;
         private String roleName;
     }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class New {
+        private String username;
+        private String keyword;
+        private Integer groupId;
+    }
 }
