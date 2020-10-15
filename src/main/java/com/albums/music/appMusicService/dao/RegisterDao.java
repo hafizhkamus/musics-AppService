@@ -167,7 +167,6 @@ public class RegisterDao {
                 groupUsers.setId(hasil.get().getId());
                 groupUsers.setIdUser(hasil.get().getIdUser());
                 groupUsers.setIsCheck(isCheck);
-                return groupUsers;
             } else{
                 isCheck = false;
                 groupUsers.setIsCheck(isCheck);

@@ -64,9 +64,11 @@ public class UserAdminDao {
         return prop;
     }
 
-    public boolean cekLoginValid(UserAdmin user){
-        String baseQuery = "select u.user_name from user_admin u join akun_admin a on (u.user_name = a.username) where tokenkey = ?";
-        StatusLogin state = new StatusLogin();
+    public StatusLogin cekLoginValid(UserAdmin user){
+        String baseQuery = "select a.user_name from user_admin a inner " +
+                "join akun_admin b on b.username = a.user_name where tokenkey = ?";
+        StatusLogin slogin = new StatusLogin();
+
         try{
             boolean isValid = false;
             Optional<UserAdmin> hasil = Optional.of(jdbcTemplate.queryForObject(baseQuery, (rs, rownum) ->{
@@ -75,23 +77,21 @@ public class UserAdminDao {
                 return use;
             },user.getTokenKey()));
             if (hasil.isPresent()){
-                if (Objects.equals(user.getUserName(), hasil.get().getTokenKey())){
-                    List<String> roleName = getRolesByUserName(hasil.get().getUserName());
-                    if (roleName != null){
-                        state.setIsValid(true);
-                        state.setRole(roleName);
-                        state.setToken(user.getTokenKey());
-                        return state.getIsValid();
-                    }
-                } else{
-                    state.setIsValid(false);
+                if(Objects.equals(user.getUserName(), hasil.get().getUserName())){
+                    List<String> rolesName = getRolesByUserName(hasil.get().getUserName());
+                    slogin.setIsValid(true);
+                    slogin.setRole(rolesName);
+                    slogin.setToken(user.getTokenKey());
+                    System.out.println(hasil.get().getTokenKey());
+                }else{
+                    slogin.setIsValid(false);
                 }
             }
         }catch (Exception e){
+            slogin.setIsValid(false);
             e.printStackTrace();
-            state.setIsValid(false);
         }
-        return state.getIsValid();
+        return slogin;
     }
 
     public void insertUserLogin(Map<String, Object>param){
