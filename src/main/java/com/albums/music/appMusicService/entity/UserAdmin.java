@@ -11,7 +11,6 @@ public class UserAdmin {
 
     private String userName;
     private String userPassword;
-    private Integer groupId;
     private String tokenKey;
 
 

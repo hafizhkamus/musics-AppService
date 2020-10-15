@@ -33,8 +33,7 @@ public class AuthController {
                     String token = UUID.randomUUID().toString();
                     statusLogin.setIsValid(true);
                     statusLogin.setToken(token);
-                    Integer a = useradmindb.get().getGroupId();
-                    List<String> roles = dao.getRolesById(a);
+                    List<String> roles = dao.getRolesByUserName(userAdmin.getUserName());
                     statusLogin.setRole(roles);
                     Map<String, Object> paramlogin = new HashMap<>();
                     paramlogin.put("username", username);
@@ -57,10 +56,10 @@ public class AuthController {
         return ResponseEntity.ok().body(dao.cekLoginValid(userAdmin));
     }
 
-    @GetMapping(path = "/getRole/{id}")
-    public ResponseEntity<List<String>> getRoleById(@PathVariable Integer id){
-        return ResponseEntity.ok().body(dao.getRolesById(id));
-    }
+//    @GetMapping(path = "/getRole/{id}")
+//    public ResponseEntity<List<String>> getRoleById(@PathVariable Integer id){
+//        return ResponseEntity.ok().body(dao.getRolesById(id));
+//    }
 
 
 }

@@ -37,13 +37,12 @@ public class UserAdminDao {
     }
 
     public Optional<AkunAdmin> getUserAdminById(String userAdmin) {
-        String SQL = "select username, keyword, group_id from akun_admin where username = ? ";
+        String SQL = "select username, keyword from akun_admin where username = ? ";
         try {
             return Optional.of(jdbcTemplate.queryForObject(SQL, (rs, rownum) -> {
                 AkunAdmin kab = new AkunAdmin();
                 kab.setUsername(rs.getString("username"));
                 kab.setKeyword(rs.getString("keyword"));
-                kab.setGroupId(rs.getInt("group_id"));
                 return kab;
             }, userAdmin));
         } catch (Exception e) {
@@ -52,10 +51,11 @@ public class UserAdminDao {
         }
     }
 
-    public List<String> getRolesById(Integer id){
-        String query = "select role_name from roles where role_id = ?";
+    public List<String> getRolesByUserName(String userName){
+        String query = "select r.role_name from group_user g join roles r on (g.id_group = r.id_role) " +
+                " join akun_admin a on (g.id_user = a.id) where a.username = ?";
 
-        Object param[] = {id};
+        Object param[] = {userName};
 
         List<String> prop = jdbcTemplate.query(query, (rs, rownum) ->{
             return rs.getString("role_name");
@@ -65,19 +65,18 @@ public class UserAdminDao {
     }
 
     public boolean cekLoginValid(UserAdmin user){
-        String baseQuery = "select u.user_name, a.group_id from user_admin u join akun_admin a on (u.user_name = a.username) where tokenkey = ?";
+        String baseQuery = "select u.user_name from user_admin u join akun_admin a on (u.user_name = a.username) where tokenkey = ?";
         StatusLogin state = new StatusLogin();
         try{
             boolean isValid = false;
             Optional<UserAdmin> hasil = Optional.of(jdbcTemplate.queryForObject(baseQuery, (rs, rownum) ->{
                 UserAdmin use = new UserAdmin();
                 use.setUserName(rs.getString("user_name"));
-                use.setGroupId(rs.getInt("group_id"));
                 return use;
             },user.getTokenKey()));
             if (hasil.isPresent()){
                 if (Objects.equals(user.getUserName(), hasil.get().getTokenKey())){
-                    List<String> roleName = getRolesById(hasil.get().getGroupId());
+                    List<String> roleName = getRolesByUserName(hasil.get().getUserName());
                     if (roleName != null){
                         state.setIsValid(true);
                         state.setRole(roleName);
